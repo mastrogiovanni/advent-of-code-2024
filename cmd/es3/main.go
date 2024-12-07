@@ -47,20 +47,9 @@ func Part2(buffer bytes.Buffer) {
 	log.Println(sum)
 }
 
-func FullBytes(fileName string) bytes.Buffer {
-	scanner := utility.ScanFile(fileName)
-	var buffer bytes.Buffer
-	for scanner.Scan() {
-		buffer.WriteString(scanner.Text())
-	}
-	return buffer
-}
-
 func main() {
-
-	Part1(FullBytes("cmd/es3/test.txt"))
-	Part1(FullBytes("cmd/es3/input.txt"))
-	Part2(FullBytes("cmd/es3/test.txt"))
-	Part2(FullBytes("cmd/es3/input.txt"))
-
+	Part1(utility.FullBytes("cmd/es3/test.txt"))
+	Part1(utility.FullBytes("cmd/es3/input.txt"))
+	Part2(utility.FullBytes("cmd/es3/test.txt"))
+	Part2(utility.FullBytes("cmd/es3/input.txt"))
 }
