@@ -1,5 +1,7 @@
 package utility
 
+import "fmt"
+
 type CharGraph struct {
 	Width  int
 	Height int
@@ -17,8 +19,21 @@ func NewGraph(fileName string) *CharGraph {
 	}
 }
 
+func (g *CharGraph) Dump() {
+	for _, row := range g.Rows {
+		fmt.Println(row)
+	}
+}
+
 func (g *CharGraph) Get(x, y int) byte {
 	return g.Rows[y][x]
+}
+
+func (g *CharGraph) Set(x, y int, c byte) {
+	row := g.Rows[y]
+	bytes := []byte(row)
+	bytes[x] = c
+	g.Rows[y] = string(bytes)
 }
 
 func (g *CharGraph) In(x, y int) bool {
