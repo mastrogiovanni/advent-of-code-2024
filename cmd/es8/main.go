@@ -11,7 +11,12 @@ type Point struct {
 	Y int
 }
 
-func Part1(graph *utility.CharGraph) {
+type AntennasAndSymbols struct {
+	Antennas map[byte][]Point
+	Symbols  map[Point]bool
+}
+
+func GetAntennasAndSymbols(graph *utility.CharGraph) *AntennasAndSymbols {
 	symbols := make(map[Point]bool)
 	antennas := make(map[byte][]Point)
 	for y := 0; y < graph.Height; y++ {
@@ -30,8 +35,52 @@ func Part1(graph *utility.CharGraph) {
 			}
 		}
 	}
+	return &AntennasAndSymbols{
+		Antennas: antennas,
+		Symbols:  symbols,
+	}
+}
+
+func Part2(graph *utility.CharGraph) {
+	antennasAndSymbols := GetAntennasAndSymbols(graph)
 	antinodes := make(map[Point]bool)
-	for _, v := range antennas {
+	for _, v := range antennasAndSymbols.Antennas {
+		for i := 0; i < len(v); i++ {
+			for j := i + 1; j < len(v); j++ {
+				a := v[i]
+				b := v[j]
+				dx := a.X - b.X
+				dy := a.Y - b.Y
+				for z := 0; ; z++ {
+					antinodeResonant := Point{a.X + z*dx, a.Y + z*dy}
+					if graph.In(antinodeResonant.X, antinodeResonant.Y) {
+						antinodes[antinodeResonant] = true
+						graph.Set(antinodeResonant.X, antinodeResonant.Y, '#')
+					} else {
+						break
+					}
+				}
+				for z := 0; ; z++ {
+					antinodeResonant := Point{b.X - z*dx, b.Y - z*dy}
+					if graph.In(antinodeResonant.X, antinodeResonant.Y) {
+						antinodes[antinodeResonant] = true
+						graph.Set(antinodeResonant.X, antinodeResonant.Y, '#')
+					} else {
+						break
+					}
+				}
+
+			}
+		}
+	}
+	// graph.Dump()
+	log.Println(len(antinodes))
+}
+
+func Part1(graph *utility.CharGraph) {
+	antennasAndSymbols := GetAntennasAndSymbols(graph)
+	antinodes := make(map[Point]bool)
+	for _, v := range antennasAndSymbols.Antennas {
 		for i := 0; i < len(v)-1; i++ {
 			for j := i + 1; j < len(v); j++ {
 				a := v[i]
@@ -55,4 +104,6 @@ func Part1(graph *utility.CharGraph) {
 func main() {
 	Part1(utility.NewGraph("cmd/es8/test.txt"))
 	Part1(utility.NewGraph("cmd/es8/input.txt"))
+	Part2(utility.NewGraph("cmd/es8/test.txt"))
+	Part2(utility.NewGraph("cmd/es8/input.txt"))
 }
