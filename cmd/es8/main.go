@@ -11,13 +11,7 @@ type Point struct {
 	Y int
 }
 
-type AntennasAndSymbols struct {
-	Antennas map[byte][]Point
-	Symbols  map[Point]bool
-}
-
-func GetAntennasAndSymbols(graph *utility.CharGraph) *AntennasAndSymbols {
-	symbols := make(map[Point]bool)
+func GetAntennas(graph *utility.CharGraph) map[byte][]Point {
 	antennas := make(map[byte][]Point)
 	for y := 0; y < graph.Height; y++ {
 		for x := 0; x < graph.Width; x++ {
@@ -26,7 +20,6 @@ func GetAntennasAndSymbols(graph *utility.CharGraph) *AntennasAndSymbols {
 				continue
 			}
 			position := Point{x, y}
-			symbols[position] = true
 			items, ok := antennas[symbol]
 			if !ok {
 				antennas[symbol] = []Point{position}
@@ -35,16 +28,13 @@ func GetAntennasAndSymbols(graph *utility.CharGraph) *AntennasAndSymbols {
 			}
 		}
 	}
-	return &AntennasAndSymbols{
-		Antennas: antennas,
-		Symbols:  symbols,
-	}
+	return antennas
 }
 
 func Part2(graph *utility.CharGraph) {
-	antennasAndSymbols := GetAntennasAndSymbols(graph)
+	antennas := GetAntennas(graph)
 	antinodes := make(map[Point]bool)
-	for _, v := range antennasAndSymbols.Antennas {
+	for _, v := range antennas {
 		for i := 0; i < len(v); i++ {
 			for j := i + 1; j < len(v); j++ {
 				a := v[i]
@@ -55,7 +45,6 @@ func Part2(graph *utility.CharGraph) {
 					antinodeResonant := Point{a.X + z*dx, a.Y + z*dy}
 					if graph.In(antinodeResonant.X, antinodeResonant.Y) {
 						antinodes[antinodeResonant] = true
-						graph.Set(antinodeResonant.X, antinodeResonant.Y, '#')
 					} else {
 						break
 					}
@@ -64,7 +53,6 @@ func Part2(graph *utility.CharGraph) {
 					antinodeResonant := Point{b.X - z*dx, b.Y - z*dy}
 					if graph.In(antinodeResonant.X, antinodeResonant.Y) {
 						antinodes[antinodeResonant] = true
-						graph.Set(antinodeResonant.X, antinodeResonant.Y, '#')
 					} else {
 						break
 					}
@@ -73,14 +61,13 @@ func Part2(graph *utility.CharGraph) {
 			}
 		}
 	}
-	// graph.Dump()
 	log.Println(len(antinodes))
 }
 
 func Part1(graph *utility.CharGraph) {
-	antennasAndSymbols := GetAntennasAndSymbols(graph)
+	antennas := GetAntennas(graph)
 	antinodes := make(map[Point]bool)
-	for _, v := range antennasAndSymbols.Antennas {
+	for _, v := range antennas {
 		for i := 0; i < len(v)-1; i++ {
 			for j := i + 1; j < len(v); j++ {
 				a := v[i]
