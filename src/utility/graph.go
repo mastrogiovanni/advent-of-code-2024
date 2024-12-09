@@ -8,6 +8,11 @@ type CharGraph struct {
 	Rows   []string
 }
 
+type Point struct {
+	X int
+	Y int
+}
+
 func NewGraph(fileName string) *CharGraph {
 	rows := FileLines(fileName)
 	width := len(rows[0])
@@ -20,6 +25,7 @@ func NewGraph(fileName string) *CharGraph {
 }
 
 func (g *CharGraph) Dump() {
+	fmt.Println()
 	for _, row := range g.Rows {
 		fmt.Println(row)
 	}
