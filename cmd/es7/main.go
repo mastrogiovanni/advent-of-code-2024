@@ -54,7 +54,6 @@ func Part1(scanner *bufio.Scanner) {
 		items_string := strings.Split(tot_and_list[1][1:], " ")
 		items := utility.StrToIntList(items_string)
 		if Analyze1(tot, items[0], items[1:]) {
-			log.Println(line)
 			result += tot
 		}
 	}
@@ -70,7 +69,6 @@ func Part2(scanner *bufio.Scanner) {
 		items_string := strings.Split(tot_and_list[1][1:], " ")
 		items := utility.StrToIntList(items_string)
 		if Analyze2(tot, items[0], items[1:]) {
-			log.Println(line)
 			result += tot
 		}
 	}

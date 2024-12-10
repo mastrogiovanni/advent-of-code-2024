@@ -169,24 +169,9 @@ func Part1(graph *utility.CharGraph) {
 	log.Println(len(visited))
 }
 
-func Test(graph *utility.CharGraph) {
-	posX := 4
-	posY := 6
-
-	// 8, 3
-	graph.Set(8, 3, 'O')
-	log.Println(HasLoop(graph, posX, posY, 0))
-	visited := Visited(graph, posX, posY)
-	for k := range visited {
-		graph.Set(k.X, k.Y, 'x')
-	}
-	graph.Dump()
-}
-
 func main() {
-	// Test(utility.NewGraph("cmd/es6/test.txt"))
-	// Part1(utility.NewGraph("cmd/es6/test.txt"))
-	// Part1(utility.NewGraph("cmd/es6/input.txt"))
+	Part1(utility.NewGraph("cmd/es6/test.txt"))
+	Part1(utility.NewGraph("cmd/es6/input.txt"))
 	Part2(utility.NewGraph("cmd/es6/test.txt"))
 	Part2(utility.NewGraph("cmd/es6/input.txt"))
 }
