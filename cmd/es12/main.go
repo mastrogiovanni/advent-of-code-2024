@@ -12,13 +12,6 @@ type AreaAndPerimeter struct {
 	Sides     int
 }
 
-var Directions = [][]int{
-	{0, -1}, // 0: north
-	{1, 0},  // 1: east
-	{0, 1},  // 2: south
-	{-1, 0}, // 3: west
-}
-
 func Expand(graph *utility.CharGraph, point utility.Point, globalVisited map[utility.Point]bool) AreaAndPerimeter {
 	result := AreaAndPerimeter{Area: 0, Perimeter: 0}
 	symbol := graph.Get(point.X, point.Y)
@@ -34,10 +27,10 @@ func Expand(graph *utility.CharGraph, point utility.Point, globalVisited map[uti
 		result.Area += 1
 		result.Perimeter += 4
 		for direction := 0; direction < 4; direction++ {
-			if !graph.In(point.X+Directions[direction][0], point.Y+Directions[direction][1]) {
+			if !graph.In(point.X+utility.Directions[direction][0], point.Y+utility.Directions[direction][1]) {
 				continue
 			}
-			adjacent := utility.Point{X: point.X + Directions[direction][0], Y: point.Y + Directions[direction][1]}
+			adjacent := utility.Point{X: point.X + utility.Directions[direction][0], Y: point.Y + utility.Directions[direction][1]}
 			if graph.Get(adjacent.X, adjacent.Y) != symbol {
 				continue
 			}
@@ -56,7 +49,7 @@ func GetSidesAdjustment(graph *utility.CharGraph, visited map[utility.Point]bool
 	toRemove := 0
 	for point := range visited {
 		for _, direction := range []int{0, 1} {
-			adjacent := utility.Point{X: point.X + Directions[direction][0], Y: point.Y + Directions[direction][1]}
+			adjacent := utility.Point{X: point.X + utility.Directions[direction][0], Y: point.Y + utility.Directions[direction][1]}
 			if !graph.In(point.X, point.Y) || !graph.In(adjacent.X, adjacent.Y) {
 				continue
 			}
@@ -67,16 +60,16 @@ func GetSidesAdjustment(graph *utility.CharGraph, visited map[utility.Point]bool
 			}
 			if direction == 0 {
 				// check if in direction 1 and 3 there are not visited
-				pointCheck1 := utility.Point{X: point.X + Directions[1][0], Y: point.Y + Directions[1][1]}
-				adjacentCheck1 := utility.Point{X: adjacent.X + Directions[1][0], Y: adjacent.Y + Directions[1][1]}
+				pointCheck1 := utility.Point{X: point.X + utility.Directions[1][0], Y: point.Y + utility.Directions[1][1]}
+				adjacentCheck1 := utility.Point{X: adjacent.X + utility.Directions[1][0], Y: adjacent.Y + utility.Directions[1][1]}
 				_, ok3 := visited[pointCheck1]
 				_, ok4 := visited[adjacentCheck1]
 				if !ok3 && !ok4 {
 					toRemove += 1
 				}
 
-				pointCheck3 := utility.Point{X: point.X + Directions[3][0], Y: point.Y + Directions[3][1]}
-				adjacentCheck3 := utility.Point{X: adjacent.X + Directions[3][0], Y: adjacent.Y + Directions[3][1]}
+				pointCheck3 := utility.Point{X: point.X + utility.Directions[3][0], Y: point.Y + utility.Directions[3][1]}
+				adjacentCheck3 := utility.Point{X: adjacent.X + utility.Directions[3][0], Y: adjacent.Y + utility.Directions[3][1]}
 				_, ok5 := visited[pointCheck3]
 				_, ok6 := visited[adjacentCheck3]
 				if !ok5 && !ok6 {
@@ -84,16 +77,16 @@ func GetSidesAdjustment(graph *utility.CharGraph, visited map[utility.Point]bool
 				}
 			} else if direction == 1 {
 				// check if in direction 2 and 0 there are not visited
-				pointCheck2 := utility.Point{X: point.X + Directions[2][0], Y: point.Y + Directions[2][1]}
-				adjacentCheck2 := utility.Point{X: adjacent.X + Directions[2][0], Y: adjacent.Y + Directions[2][1]}
+				pointCheck2 := utility.Point{X: point.X + utility.Directions[2][0], Y: point.Y + utility.Directions[2][1]}
+				adjacentCheck2 := utility.Point{X: adjacent.X + utility.Directions[2][0], Y: adjacent.Y + utility.Directions[2][1]}
 				_, ok3 := visited[pointCheck2]
 				_, ok4 := visited[adjacentCheck2]
 				if !ok3 && !ok4 {
 					toRemove += 1
 				}
 
-				pointCheck0 := utility.Point{X: point.X + Directions[0][0], Y: point.Y + Directions[0][1]}
-				adjacentCheck0 := utility.Point{X: adjacent.X + Directions[0][0], Y: adjacent.Y + Directions[0][1]}
+				pointCheck0 := utility.Point{X: point.X + utility.Directions[0][0], Y: point.Y + utility.Directions[0][1]}
+				adjacentCheck0 := utility.Point{X: adjacent.X + utility.Directions[0][0], Y: adjacent.Y + utility.Directions[0][1]}
 				_, ok5 := visited[pointCheck0]
 				_, ok6 := visited[adjacentCheck0]
 				if !ok5 && !ok6 {

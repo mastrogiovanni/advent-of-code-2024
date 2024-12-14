@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 	"image/png"
@@ -59,20 +58,62 @@ func Part1(fileName string, w, h int, steps int) {
 				q4 = q4 + 1
 			}
 		}
-		log.Println("Q", q1, q2, q3, q4)
-
 	}
 	log.Println(q1 * q2 * q3 * q4)
+}
+
+func ComponentSize(point utility.Point, globalVisited map[utility.Point]bool, width, height int) int {
+	visited := make(map[utility.Point]bool)
+	size := 1
+	for toVisit := []utility.Point{point}; len(toVisit) > 0; {
+		point := toVisit[0]
+		toVisit = toVisit[1:]
+		if _, ok := visited[point]; ok {
+			continue
+		}
+		visited[point] = true
+		for direction := 0; direction < 4; direction++ {
+			if !(point.X+utility.Directions[direction][0] >= 0 &&
+				point.X+utility.Directions[direction][0] < width &&
+				point.Y+utility.Directions[direction][1] >= 0 &&
+				point.Y+utility.Directions[direction][1] < height) {
+				continue
+			}
+			adjacent := utility.Point{
+				X: point.X + utility.Directions[direction][0],
+				Y: point.Y + utility.Directions[direction][1],
+			}
+			if _, ok := globalVisited[adjacent]; !ok {
+				// Not colored
+				continue
+			}
+			if _, ok := visited[adjacent]; ok {
+				// Already visited
+				continue
+			}
+			toVisit = append(toVisit, adjacent)
+			size++
+		}
+	}
+	return size
+}
+
+func MakePicture(globalVisited map[utility.Point]bool, width, height int) {
+	upLeft := image.Point{0, 0}
+	lowRight := image.Point{width, height}
+	img := image.NewRGBA(image.Rectangle{upLeft, lowRight})
+	black := color.RGBA{0, 0, 0, 0xff}
+	for point := range globalVisited {
+		img.Set(point.X, point.Y, black)
+	}
+	f, _ := os.Create("image.png")
+	png.Encode(f, img)
 }
 
 func Part2(fileName string, w, h int) {
 	scanner := utility.ScanFile(fileName)
 
-	// cx := (w - 1) / 2
-	// cy := (h - 1) / 2
-
 	robots := make([]utility.Point, 0)
-
 	speeds := make([]utility.Point, 0)
 
 	for scanner.Scan() {
@@ -91,20 +132,13 @@ func Part2(fileName string, w, h int) {
 	}
 
 	count := 0
-	steps := 1 // 180 * 55
 
-	for ; ; count += steps {
+	for ; ; count++ {
 
-		upLeft := image.Point{0, 0}
-		lowRight := image.Point{w, h}
-		img := image.NewRGBA(image.Rectangle{upLeft, lowRight})
-
-		cyan := color.RGBA{0, 0, 0, 0xff}
-
-		// busy := make(map[utility.Point]bool)
+		globalVisited := make(map[utility.Point]bool)
 		for i := 0; i < len(robots); i++ {
-			px := (robots[i].X + steps*speeds[i].X) % w
-			py := (robots[i].Y + steps*speeds[i].Y) % h
+			px := (robots[i].X + speeds[i].X) % w
+			py := (robots[i].Y + speeds[i].Y) % h
 			for px < 0 {
 				px += w
 			}
@@ -113,44 +147,28 @@ func Part2(fileName string, w, h int) {
 			}
 			robots[i].X = px
 			robots[i].Y = py
-			img.Set(px, py, cyan)
-			// busy[utility.Point{X: px, Y: py}] = true
+			globalVisited[utility.Point{X: px, Y: py}] = true
 		}
 
-		f, _ := os.Create(fmt.Sprintf("pippo/%06d.png", count))
-		png.Encode(f, img)
-
-		// // Check symmetry
-		// symmetric := true
-		// for i := 0; i < len(robots); i++ {
-		// 	px := robots[i].X
-		// 	py := robots[i].Y
-		// 	sx := px
-		// 	if px < cx {
-		// 		sx = cx + (cx - px)
-		// 	}
-		// 	if px > cx {
-		// 		sx = cx - (px - cx)
-		// 	}
-		// 	if _, ok := busy[utility.Point{X: sx, Y: py}]; !ok {
-		// 		symmetric = false
-		// 		break
-		// 	}
-		// }
-		// if symmetric {
-		// 	break
-		// }
+		maxSize := 0
+		for p := range globalVisited {
+			size := ComponentSize(p, globalVisited, w, h)
+			if size > maxSize {
+				maxSize = size
+			}
+		}
+		if maxSize > 200 {
+			log.Println(count)
+			MakePicture(globalVisited, w, h)
+			break
+		}
 
 	}
-
-	log.Println(count + 1)
 
 }
 
 func main() {
-	// Part1("cmd/es14/test.txt", 11, 7, 100)
-	// Part1("cmd/es14/input.txt", 101, 103, 100)
-
+	Part1("cmd/es14/test.txt", 11, 7, 100)
+	Part1("cmd/es14/input.txt", 101, 103, 100)
 	Part2("cmd/es14/input.txt", 101, 103)
-
 }

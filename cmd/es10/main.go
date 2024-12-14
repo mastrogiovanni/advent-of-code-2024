@@ -6,13 +6,6 @@ import (
 	"github.com/mastrogiovanni/advent-of-code-2024/src/utility"
 )
 
-var Directions = [][]int{
-	{0, -1}, // 0: north
-	{1, 0},  // 1: east
-	{0, 1},  // 2: south
-	{-1, 0}, // 3: west
-}
-
 var NextChar = map[byte]byte{
 	'0': '1',
 	'1': '2',
@@ -37,7 +30,7 @@ func Traverse(point utility.Point, graph *utility.CharGraph, targets map[utility
 		return
 	}
 	nextChar := NextChar[currentChar]
-	for _, direction := range Directions {
+	for _, direction := range utility.Directions {
 		pX := point.X + direction[0]
 		pY := point.Y + direction[1]
 		if graph.In(pX, pY) && graph.Get(pX, pY) == nextChar {

@@ -7,13 +7,6 @@ import (
 	"github.com/mastrogiovanni/advent-of-code-2024/src/utility"
 )
 
-var Directions = [][]int{
-	{0, -1}, // 0: north
-	{1, 0},  // 1: east
-	{0, 1},  // 2: south
-	{-1, 0}, // 3: west
-}
-
 type PointAndDirection struct {
 	X         int
 	Y         int
@@ -31,8 +24,8 @@ func HasLoop(graph *utility.CharGraph, posX, posY, direction int) bool {
 			return true
 		}
 		visited[key] = true
-		dx := Directions[direction][0]
-		dy := Directions[direction][1]
+		dx := utility.Directions[direction][0]
+		dy := utility.Directions[direction][1]
 		nextX := posX + dx
 		nextY := posY + dy
 		if !graph.In(nextX, nextY) {
@@ -63,8 +56,8 @@ func Visited(graph *utility.CharGraph, posX, posY int) map[utility.Point]bool {
 	direction := 0
 	for {
 		visited[utility.Point{X: posX, Y: posY}] = true
-		dx := Directions[direction][0]
-		dy := Directions[direction][1]
+		dx := utility.Directions[direction][0]
+		dy := utility.Directions[direction][1]
 		if !graph.In(posX+dx, posY+dy) {
 			break
 		}
@@ -95,8 +88,8 @@ func Candidates(graph *utility.CharGraph) map[utility.Point]bool {
 	direction := 0
 	// count := 0
 	for {
-		dx := Directions[direction][0]
-		dy := Directions[direction][1]
+		dx := utility.Directions[direction][0]
+		dy := utility.Directions[direction][1]
 		testX := posX + dx
 		testY := posY + dy
 		if !graph.In(testX, testY) {

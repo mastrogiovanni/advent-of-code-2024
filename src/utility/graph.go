@@ -13,6 +13,13 @@ type Point struct {
 	Y int
 }
 
+var Directions = [][]int{
+	{0, -1}, // 0: north
+	{1, 0},  // 1: east
+	{0, 1},  // 2: south
+	{-1, 0}, // 3: west
+}
+
 func NewGraph(fileName string) *CharGraph {
 	rows := FileLines(fileName)
 	width := len(rows[0])
