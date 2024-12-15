@@ -1,6 +1,9 @@
 package utility
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+)
 
 type CharGraph struct {
 	Width  int
@@ -18,6 +21,24 @@ var Directions = [][]int{
 	{1, 0},  // 1: east
 	{0, 1},  // 2: south
 	{-1, 0}, // 3: west
+}
+
+func NewGraphFromScanner(scanner *bufio.Scanner) *CharGraph {
+	var fileLines []string
+	for scanner.Scan() {
+		row := scanner.Text()
+		if row == "" {
+			break
+		}
+		fileLines = append(fileLines)
+	}
+	width := len(fileLines[0])
+	height := len(fileLines)
+	return &CharGraph{
+		Rows:   fileLines,
+		Width:  width,
+		Height: height,
+	}
 }
 
 func NewGraph(fileName string) *CharGraph {
