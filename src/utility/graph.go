@@ -17,10 +17,10 @@ type Point struct {
 }
 
 var Directions = [][]int{
-	{0, -1}, // 0: north
-	{1, 0},  // 1: east
-	{0, 1},  // 2: south
-	{-1, 0}, // 3: west
+	{0, -1}, // 0: north 	^
+	{1, 0},  // 1: east 	>
+	{0, 1},  // 2: south	v
+	{-1, 0}, // 3: west		<
 }
 
 func NewGraphFromScanner(scanner *bufio.Scanner) *CharGraph {
@@ -30,7 +30,7 @@ func NewGraphFromScanner(scanner *bufio.Scanner) *CharGraph {
 		if row == "" {
 			break
 		}
-		fileLines = append(fileLines)
+		fileLines = append(fileLines, row)
 	}
 	width := len(fileLines[0])
 	height := len(fileLines)
@@ -50,6 +50,17 @@ func NewGraph(fileName string) *CharGraph {
 		Width:  width,
 		Height: height,
 	}
+}
+
+func (g *CharGraph) Find(symbol byte) Point {
+	for y := 0; y < g.Height; y++ {
+		for x := 0; x < g.Width; x++ {
+			if g.Get(x, y) == symbol {
+				return Point{X: x, Y: y}
+			}
+		}
+	}
+	return Point{-1, -1}
 }
 
 func (g *CharGraph) Dump() {

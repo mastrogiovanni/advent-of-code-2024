@@ -44,3 +44,11 @@ func FileLines(fileName string) []string {
 	}
 	return fileLines
 }
+
+func FileLinesFromScanner(scanner *bufio.Scanner) []string {
+	var fileLines []string
+	for scanner.Scan() {
+		fileLines = append(fileLines, scanner.Text())
+	}
+	return fileLines
+}
