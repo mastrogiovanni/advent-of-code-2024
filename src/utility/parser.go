@@ -3,6 +3,7 @@ package utility
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -13,6 +14,38 @@ func StrToIntList(elements []string) []int {
 	for i := 0; i < len(elements); i++ {
 		v, _ := strconv.Atoi(elements[i])
 		result[i] = v
+	}
+	return result
+}
+
+func IntToStrList(elements []int) []string {
+	result := make([]string, len(elements))
+	for i := 0; i < len(elements); i++ {
+		result[i] = fmt.Sprintf("%d", elements[i])
+	}
+	return result
+}
+
+func UIntToStrList(elements []uint) []string {
+	result := make([]string, len(elements))
+	for i := 0; i < len(elements); i++ {
+		result[i] = fmt.Sprintf("%d", elements[i])
+	}
+	return result
+}
+
+func UInt32ToStrList(elements []uint32) []string {
+	result := make([]string, len(elements))
+	for i := 0; i < len(elements); i++ {
+		result[i] = fmt.Sprintf("%d", elements[i])
+	}
+	return result
+}
+
+func UInt64ToStrList(elements []uint64) []string {
+	result := make([]string, len(elements))
+	for i := 0; i < len(elements); i++ {
+		result[i] = fmt.Sprintf("%d", elements[i])
 	}
 	return result
 }
