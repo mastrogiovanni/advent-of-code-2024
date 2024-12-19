@@ -2,41 +2,38 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"log"
-	"regexp"
 	"strings"
 
 	"github.com/mastrogiovanni/advent-of-code-2024/src/utility"
 )
 
-var Cache = make(map[string]int)
+var Cache = make(map[string]int64)
 
-func Matches(row []byte, components [][]byte) int {
+func Matches(row []byte, components [][]byte) int64 {
 	v, ok := Cache[string(row)]
 	if ok {
 		return v
 	}
 	v = MatchesNoCache(row, components)
 	Cache[string(row)] = v
-	log.Println(len(Cache))
 	return v
 }
 
-func MatchesNoCache(row []byte, components [][]byte) int {
+// Return the number of different ways to produce the string "row"
+// given the set of strings identified by "components" list
+func MatchesNoCache(row []byte, components [][]byte) int64 {
 	if len(row) == 0 {
 		return 1
 	}
-	sum := 0
+	sum := int64(0)
 	for _, item := range components {
+		// Discard items that doesn't fit the string
 		if len(row) < len(item) {
 			continue
 		}
-		// log.Println(string(row[0:len(item)]), string(item), bytes.Equal(row[0:len(item)], item))
 		if bytes.Equal(row[0:len(item)], item) {
-			// log.Println(string(row[0:len(item)]), string(item), bytes.Equal(row[0:len(item)], item))
-			res := Matches(row[len(item):], components)
-			sum += res
+			sum += Matches(row[len(item):], components)
 		}
 	}
 	return sum
@@ -53,7 +50,7 @@ func Part2(fileName string) {
 	}
 	scanner.Scan()
 	scanner.Text()
-	count := 0
+	count := int64(0)
 	for scanner.Scan() {
 		row := scanner.Text()
 		res := Matches([]byte(row), components)
@@ -68,15 +65,16 @@ func Part1(fileName string) {
 	scanner.Scan()
 	first := scanner.Text()
 	items := strings.Split(first, ", ")
-	regexpString := fmt.Sprintf("^(%s)+$", strings.Join(items, "|"))
-	// log.Println(regexpString)
-	r := regexp.MustCompile(regexpString)
+	components := make([][]byte, len(items))
+	for i, item := range items {
+		components[i] = []byte(item)
+	}
 	scanner.Scan()
 	scanner.Text()
 	count := 0
 	for scanner.Scan() {
 		row := scanner.Text()
-		if r.Match([]byte(row)) {
+		if Matches([]byte(row), components) > 0 {
 			count++
 		}
 	}
