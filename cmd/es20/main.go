@@ -7,7 +7,7 @@ import (
 	"github.com/mastrogiovanni/advent-of-code-2024/src/utility"
 )
 
-func Visit(start, stop utility.Point, graph map[utility.Point]bool, width, height int, parents map[utility.Point]utility.Point) int {
+func FindShortestPath(start, stop utility.Point, walls map[utility.Point]bool, width, height int, parents map[utility.Point]utility.Point) int {
 	lenghts := make(map[utility.Point]int)
 	visited := make(map[utility.Point]bool)
 	queue := make([]utility.Point, 1)
@@ -30,7 +30,7 @@ func Visit(start, stop utility.Point, graph map[utility.Point]bool, width, heigh
 				continue
 			}
 			np := utility.Point{X: nx, Y: ny}
-			if _, ok := graph[np]; ok {
+			if _, ok := walls[np]; ok {
 				// Cell is blocked
 				continue
 			}
@@ -58,22 +58,9 @@ func Visit(start, stop utility.Point, graph map[utility.Point]bool, width, heigh
 	}
 }
 
-// func IsInterrupted(start, stop utility.Point, graph map[utility.Point]bool) bool {
-// 	for {
-// 		if start.X != stop.X || start.Y != stop.Y {
-// 			if _, ok := graph[start]; ok {
-// 				return true
-// 			}
-
-// 		} else {
-// 			return false
-// 		}
-// 	}
-// }
-
-func Evaluate2(start, stop utility.Point, graph map[utility.Point]bool, width, height int, picosecondsRule int, minPath int) {
+func Evaluate(start, stop utility.Point, walls map[utility.Point]bool, width, height int, picosecondsRule int, minPath int) {
 	parents := make(map[utility.Point]utility.Point)
-	Visit(start, stop, graph, width, height, parents)
+	FindShortestPath(start, stop, walls, width, height, parents)
 	path := make([]utility.Point, 0)
 	node := stop
 	for {
@@ -88,7 +75,7 @@ func Evaluate2(start, stop utility.Point, graph map[utility.Point]bool, width, h
 	saves := make(map[int]int)
 	for i := 0; i < len(path)-2; i++ {
 		for j := i + 2; j < len(path); j++ {
-			taxiCabDistance := path[i].TaxiCabDistance(path[j])
+			taxiCabDistance := path[i].ManhattanDistance(path[j])
 			if !(taxiCabDistance > 1 && taxiCabDistance <= picosecondsRule) {
 				continue
 			}
@@ -114,36 +101,8 @@ func Evaluate2(start, stop utility.Point, graph map[utility.Point]bool, width, h
 	log.Println(sum)
 }
 
-func Evaluate(start, stop utility.Point, graph map[utility.Point]bool, width, height int) {
-	parents := make(map[utility.Point]utility.Point)
-	baseline := Visit(start, stop, graph, width, height, parents)
-	saves := make(map[int]int)
-	for w := range graph {
-		old1, ok1 := graph[w]
-		delete(graph, w)
-		shorter := Visit(start, stop, graph, width, height, parents)
-		save := baseline - shorter
-		v, ok := saves[save]
-		if ok {
-			saves[save] = v + 1
-		} else {
-			saves[save] = 1
-		}
-		if ok1 {
-			graph[w] = old1
-		}
-	}
-	sum := 0
-	for save, count := range saves {
-		if save >= 100 {
-			sum += count
-		}
-	}
-	log.Println(sum)
-	log.Println(saves)
-}
+func Resolve(fileName string, picosecondRule int, minPath int) {
 
-func Part1(fileName string) {
 	graph := utility.NewGraph(fileName)
 	start := graph.Find('S')
 	stop := graph.Find('E')
@@ -157,30 +116,13 @@ func Part1(fileName string) {
 		}
 	}
 
-	Evaluate(start, stop, g, graph.Width, graph.Height)
-}
-
-func Part2(fileName string, picosecondRule int, minPath int) {
-	graph := utility.NewGraph(fileName)
-	start := graph.Find('S')
-	stop := graph.Find('E')
-
-	g := make(map[utility.Point]bool)
-	for x := 0; x < graph.Width; x++ {
-		for y := 0; y < graph.Height; y++ {
-			if graph.Get(x, y) == '#' {
-				g[utility.Point{X: x, Y: y}] = true
-			}
-		}
-	}
-
-	Evaluate2(start, stop, g, graph.Width, graph.Height, picosecondRule, minPath)
+	Evaluate(start, stop, g, graph.Width, graph.Height, picosecondRule, minPath)
 }
 
 func main() {
-	Part2("cmd/es20/test.txt", 2, 0)
-	Part2("cmd/es20/input.txt", 2, 100)
-	Part2("cmd/es20/test.txt", 20, 0)
-	Part2("cmd/es20/input.txt", 20, 50)
+	Resolve("cmd/es20/test.txt", 2, 0)
+	Resolve("cmd/es20/input.txt", 2, 100)
+	Resolve("cmd/es20/test.txt", 20, 0)
+	Resolve("cmd/es20/input.txt", 20, 50)
 
 }

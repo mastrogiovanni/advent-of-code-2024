@@ -16,7 +16,7 @@ type Point struct {
 	Y int
 }
 
-func (p1 Point) TaxiCabDistance(p2 Point) int {
+func (p1 Point) ManhattanDistance(p2 Point) int {
 	return max(p1.X, p2.X) - min(p1.X, p2.X) + max(p1.Y, p2.Y) - min(p1.Y, p2.Y)
 }
 
