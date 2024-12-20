@@ -16,6 +16,17 @@ type Point struct {
 	Y int
 }
 
+func (p1 Point) TaxiCabDistance(p2 Point) int {
+	return max(p1.X, p2.X) - min(p1.X, p2.X) + max(p1.Y, p2.Y) - min(p1.Y, p2.Y)
+}
+
+func (p Point) Move(d int) Point {
+	return Point{
+		X: p.X + Directions[d][0],
+		Y: p.Y + Directions[d][1],
+	}
+}
+
 var Directions = [][]int{
 	{0, -1}, // 0: north 	^
 	{1, 0},  // 1: east 	>
